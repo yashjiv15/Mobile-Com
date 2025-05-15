@@ -3,18 +3,24 @@ from typing import Optional
 
 class ProductBase(BaseModel):
     name: str
-    description: Optional[str]
-    price: int
+    description: Optional[str] = None
+    price: float
+    quantity: int
 
 class ProductCreate(ProductBase):
     pass
 
-class ProductUpdate(ProductBase):
-    pass
+class ProductUpdate(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    price: Optional[float]
+    quantity: Optional[int]
 
-class ProductOut(ProductBase):
-    id: int
-    created_by: int
+class ProductOut(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    quantity: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

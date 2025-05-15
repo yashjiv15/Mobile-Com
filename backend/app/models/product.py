@@ -10,5 +10,6 @@ class Product(Base):
     description = Column(Text, nullable=True)
     price = Column(Integer, nullable=False)
     created_by = Column(Integer, ForeignKey("users.id"))
+    quantity = Column(Integer, nullable=False)
 
     admin = relationship("User", backref="products")

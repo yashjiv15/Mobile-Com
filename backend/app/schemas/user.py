@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr , Field
 from enum import Enum
+from typing import Optional
 
 class RoleEnum(str, Enum):
     admin = "admin"
@@ -8,16 +9,24 @@ class RoleEnum(str, Enum):
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-    role: RoleEnum
+    role: str = Field(default="customer")  # Default role set to "customer"
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: Optional[EmailStr] = None
+    username: Optional[str] = None
     password: str
 
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
     role: RoleEnum
+class UserRole(str, Enum):
+    admin = "admin"
+    customer = "customer"
 
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    role: UserRole
     class Config:
-        orm_mode = True
+        from_attributes = True

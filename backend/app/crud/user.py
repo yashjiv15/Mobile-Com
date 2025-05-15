@@ -1,3 +1,4 @@
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate
@@ -16,3 +17,10 @@ def create_user(db: Session, user: UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+def get_user_by_username(db: Session, username: str):
+    return db.query(User).filter(User.username == username).first()  # Assuming you have a username field in your User model
+def get_users(db: Session) -> List[User]:
+    return db.query(User).all()
+
+def get_user_by_id(db: Session, user_id: int) -> Optional[User]:
+    return db.query(User).filter(User.id == user_id).first()

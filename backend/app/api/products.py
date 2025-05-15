@@ -24,27 +24,17 @@ def create(product: ProductCreate, db: Session = Depends(get_db), user = Depends
     return create_product(db, product, user.id)
 
 @router.get("/", response_model=List[ProductOut])
-def read_all(admin: Optional[str] = None, db: Session = Depends(get_db)):
-    return get_all_products(db, admin)
+def read_all(db: Session = Depends(get_db)):
+    return get_all_products(db)
 
 @router.get("/{product_id}", response_model=ProductOut)
-def read(product_id: int, db: Session = Depends(get_db)):
-    product = get_product(db, product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
+def read_one(product_id: int, db: Session = Depends(get_db)):
+    return get_product(db, product_id)
 
 @router.put("/{product_id}", response_model=ProductOut)
-def update(product_id: int, updated: ProductUpdate, db: Session = Depends(get_db), user = Depends(admin_required)):
-    product = get_product(db, product_id)
-    if not product or product.created_by != user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
-    return update_product(db, product_id, updated)
+def update(product_id: int, product: ProductUpdate, db: Session = Depends(get_db), user = Depends(admin_required)):
+    return update_product(db, product_id, product)
 
 @router.delete("/{product_id}")
 def delete(product_id: int, db: Session = Depends(get_db), user = Depends(admin_required)):
-    product = get_product(db, product_id)
-    if not product or product.created_by != user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
-    delete_product(db, product_id)
-    return {"message": "Deleted"}
+    return delete_product(db, product_id)
