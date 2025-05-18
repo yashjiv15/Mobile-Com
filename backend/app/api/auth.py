@@ -21,13 +21,22 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
 
+
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    # Treat form_data.username as either email or username
+    # Retrieve the user by treating form_data.username as either email or username.
     db_user = get_user_by_email(db, form_data.username) or get_user_by_username(db, form_data.username)
     
     if not db_user or not verify_password(form_data.password, db_user.hashed_password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
+    
+    # Include user_id, email, and role in the token payload.
+    token = create_access_token(data={
+    "sub": db_user.email,  # Set the email as the subject
+    "user_id": db_user.id,
+    "role": db_user.role
+})
 
-    token = create_access_token(data={"sub": db_user.email, "role": db_user.role})
+    print(f"Generated token: {token}")
+
     return {"access_token": token, "token_type": "bearer"}
