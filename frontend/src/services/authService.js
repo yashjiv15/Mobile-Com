@@ -22,7 +22,8 @@ export const loginUser  = async (usernameOrEmail, password) => {
 
     // Store token and extracted values
     localStorage.setItem('token', token);
-    localStorage.setItem('email', decoded.email);
+    localStorage.setItem('email', decoded.sub); // ✅ correct
+
     localStorage.setItem('role', decoded.role);
     localStorage.setItem('user_id', decoded.user_id);
 

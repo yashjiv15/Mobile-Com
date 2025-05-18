@@ -9,16 +9,22 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const decoded = await loginUser(usernameOrEmail, password);
       console.log('Decoded Token:', decoded);
-      navigate('/');
+  
+      if (decoded.role === 'admin') {
+        navigate('/AddProduct');
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       console.error(error);
       alert('Login failed. Please check your credentials.');
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600">
